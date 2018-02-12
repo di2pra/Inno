@@ -1,17 +1,16 @@
 class LanguageXMLConverter:
 	"""A Simple Language Converter class: give an array of xml language files path, it will generate a single language property file"""
 
-	""" Static parameters """
-	regexPattern = '([%][0-9]+[$]\w)' # regex pattern to PHP printf directives 
 
-
-
-	def __init__(self, inputFilesPath = None):
+	def __init__(self, domObjects, inputFilesPath = None):
 		""" LanguageXMLConvert Class Initiator
 		=====================
-		@param: inputFiles([string]): optional array of string of input XML file paths
+		@param:
+			domObjects: array of domObject
+			inputFiles([string]): optional array of string of input XML file paths
 		@return: nothing
 		====================="""
+		self.domObjects = domObjects
 		self.inputFiles = [] if inputFilesPath is None else inputFilesPath # if the inputFilesPath is not defined, then set the array of file paths as empty
 
 
@@ -51,8 +50,8 @@ class LanguageXMLConverter:
 
 				lines = []
 
-				lines.extend(string(xmldoc).generateLines())
-				lines.extend(plurals(xmldoc).generateLines())
+				for domObject in self.domObjects:
+					lines.extend(domObject(xmldoc).generateLines()) # generate property lines for string element
 
 				for line in lines:
 					outputFile.write(line)

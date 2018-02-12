@@ -1,12 +1,13 @@
 from classes.LanguageXMLConverter import LanguageXMLConverter
-
+from models.plurals import plurals
+from models.string import string
 
 
 """
  Example #1 generated Italian property language file
 """
 
-italian = LanguageXMLConverter(['example/input/values-it/ads.xml', 'example/input/values-it/extra.xml', 'example/input/values-it/strings.xml', 'example/input/values-it/strings2.xml']);
+italian = LanguageXMLConverter([string, plurals], ['example/input/values-it/ads.xml', 'example/input/values-it/extra.xml', 'example/input/values-it/strings.xml', 'example/input/values-it/strings2.xml']);
 
 italian.generateOutputFile('example/output/Italian.txt') #generate property type language output file
 
@@ -17,7 +18,7 @@ italian.generateOutputFile('example/output/Italian.txt') #generate property type
 """
 
 
-english = LanguageXMLConverter() # init an instance of Language XML Converter with empty input file paths array
+english = LanguageXMLConverter([string, plurals]) # init an instance of Language XML Converter with empty input file paths array
 
 # add input file paths to the instance
 english.addInputXMLFile('example/input/values/ads.xml')

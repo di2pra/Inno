@@ -2,7 +2,44 @@ from xml.dom import minidom
 
 class domObject(object):
 
-	regexPattern = '([%][0-9]+[$]\w)'
+	""" Static parameters """
+	regexPattern = '([%][0-9]+[$]\w)' # regex pattern to replace in the output file
+
+	def __init__(self, xml):
+		""" dom object class initiator
+		=====================
+		@param: xml(Node Element): XML node element
+		@return: null
+		====================="""
+		self.xml = xml
+		self.tagName = self.__class__.__name__
+
+
+	def generateLines(self, prepend = None):
+		""" generate the dom element property file line
+		=====================
+		@param: prepend(string): optional string to prepend the property name
+		@return: [string] : return array of property file lines string
+		====================="""
+
+		value = []
+
+		dom = self.xml.getElementsByTagName(self.tagName) # get the list of items give the tag name
+
+		for domItem in dom: # for each dom item
+
+			if self.childObject == None: # if the childObject is null then generate directly the string
+
+				if prepend == None:
+					value.append(domItem.attributes[self.propertyName].value.encode('utf-8') + ' = ' + self.formatXmlCharacter(domItem.firstChild.data.encode('utf-8')) + '\n')
+				else:
+					value.append(str(prepend) + '.' + domItem.attributes[self.propertyName].value.encode('utf-8') + ' = ' + self.formatXmlCharacter(domItem.firstChild.data.encode('utf-8')) + '\n')
+
+			else: # else generate recursivly with the child domObject and prepend the parent property value
+				parentName = domItem.attributes[self.propertyName].value.encode('utf-8')
+				value.extend(self.childObject(domItem).generateLines(parentName))
+			
+		return value
 
 
 	@staticmethod
