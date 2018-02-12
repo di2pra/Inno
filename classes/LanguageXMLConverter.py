@@ -79,14 +79,22 @@ class LanguageXMLConverter:
 
 		import re
 
-		output = value
-		matchs = re.findall(LanguageXMLConverter.regexPattern, value) # find all matches of the regex within the input string
+		try:
+
+			output = value
+			matchs = re.findall(LanguageXMLConverter.regexPattern, value) # find all matches of the regex within the input string
+			
+
+			index=0 # init the position to 0
+
+			for match in matchs: #iterate for matches of the input string
+				output = output.replace(match, '{'+str(index)+'}') # replace the current match with `{position}`
+				index += 1 # increase the position by 1
+
+			return output # return the converted value
+			
+		except Exception, e: #if we catch an exception during the formating method, return the initial string value
+
+			return value
+
 		
-
-		index=0 # init the position to 0
-
-		for match in matchs: #iterate for matches of the input string
-			output = output.replace(match, '{'+str(index)+'}') # replace the current match with `{position}`
-			index += 1 # increase the position by 1
-
-		return output # return the converted value
