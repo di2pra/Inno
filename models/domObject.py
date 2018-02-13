@@ -22,7 +22,7 @@ class domObject(object):
 
 
 
-	def generateLines(self, prepend = None):
+	def generateValues(self, prepend = None):
 		""" generate the dom element property file line
 		=====================
 		@param: prepend(string): optional string to prepend the property name
@@ -45,6 +45,6 @@ class domObject(object):
 				parentName = None if (self.propertyName == None) else domItem.attributes[self.propertyName].value.encode('utf-8')
 
 				for childObject in self.childObjects:
-					value.extend(childObject(domItem).generateLines(parentName))
+					value.extend(childObject(domItem).generateValues(parentName))
 			
 		return value

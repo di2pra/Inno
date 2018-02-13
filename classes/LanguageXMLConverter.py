@@ -50,7 +50,7 @@ class LanguageXMLConverter:
 
 				xmldoc = minidom.parse(inputFile) #parse the XML input file given the path
 
-				values = self.schema(xmldoc).generateLines()
+				values = self.schema(xmldoc).generateValues()
 
 				for value in values:
 					outputFile.write(LanguageXMLConverter.lineString(value[0], value[1]))
