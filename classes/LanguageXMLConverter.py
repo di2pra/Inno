@@ -50,10 +50,10 @@ class LanguageXMLConverter:
 
 				xmldoc = minidom.parse(inputFile) #parse the XML input file given the path
 
-				lines = self.schema(xmldoc).generateLines()
+				values = self.schema(xmldoc).generateLines()
 
-				for line in lines:
-					outputFile.write(self.formatXmlCharacter(line))
+				for value in values:
+					outputFile.write(LanguageXMLConverter.lineString(value[0], value[1]))
 			
 			outputFile.close() # close the generated file
 
@@ -65,6 +65,8 @@ class LanguageXMLConverter:
 			print "Unable to generate the output file. Error info: UnicodeDecodeError - {0}".format(e)
 		except Exception as e:
 			print "Unable to generate the output file. Error info: Undefined error - {0}".format(e)
+
+
 
 
 
@@ -95,3 +97,19 @@ class LanguageXMLConverter:
 		except Exception, e: #if we catch an exception during the formating method, return the initial string value
 
 			return value
+
+
+
+
+
+	@staticmethod
+	def lineString(property, value):
+		""" generate the property file line string given the property and value
+		=====================
+		@param:
+			- property(string): string of the property name
+			- value(string): string of the property value
+		@return: [string] : return string format : `property = value`
+		====================="""
+
+		return property + ' = ' + LanguageXMLConverter.formatXmlCharacter(value) + '\n'

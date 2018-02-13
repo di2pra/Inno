@@ -26,7 +26,7 @@ class domObject(object):
 		""" generate the dom element property file line
 		=====================
 		@param: prepend(string): optional string to prepend the property name
-		@return: [string] : return array of property file lines string
+		@return: [(name, value)] : return an array of tuplet composed by (name, value)
 		====================="""
 
 		value = []
@@ -38,7 +38,7 @@ class domObject(object):
 			if self.childObjects == None: # if the childObject is null then generate directly the string
 
 				prependStr = '' if (prepend == None) else (str(prepend) + '.')
-				value.append(self.line(prependStr, domItem))
+				value.append((str(prependStr) + domItem.attributes[self.propertyName].value.encode('utf-8'), domItem.firstChild.data.encode('utf-8')))
 
 			else: # otherwise generate recursivly with the child domObject and prepend the parent property value
 
@@ -48,18 +48,3 @@ class domObject(object):
 					value.extend(childObject(domItem).generateLines(parentName))
 			
 		return value
-
-
-
-
-
-	def line(self, prepend, dom):
-		""" generate the property file line string given the prepend and dom
-		=====================
-		@param:
-			- prepend(string): optional string to prepend the property name
-			- dom : XML dom object
-		@return: [string] : return string format : `property = value
-		====================="""
-
-		return str(prepend) + dom.attributes[self.propertyName].value.encode('utf-8') + ' = ' + dom.firstChild.data.encode('utf-8') + '\n'
