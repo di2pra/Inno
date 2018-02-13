@@ -63,3 +63,5 @@ class LanguageXMLConverter:
 			print "Unable to generate the output file. Error info: I/O error({0}) - {1}".format(e.errno, e.strerror)
 		except UnicodeDecodeError as e: #catch encoding error
 			print "Unable to generate the output file. Error info: UnicodeDecodeError - {0}".format(e)
+		except Exception as e:
+			print "Unable to generate the output file. Error info: Undefined error - {0}".format(e)
