@@ -1,10 +1,10 @@
 from xml.dom import minidom
 
 class domObject(object):
+	"""Main Dom Object Mapper"""
 
 	
 	""" Static parameters """
-	regexPattern = '([%][0-9]+[$]\w)' # regex pattern to replace in the output file
 	childObjects = None # define if the current object as child dom object by default None
 	propertyName = None # define the property name of the dom object to get the property value, by default None
 
@@ -16,6 +16,10 @@ class domObject(object):
 		====================="""
 		self.xml = xml
 		self.tagName = self.__class__.__name__
+
+
+
+
 
 
 	def generateLines(self, prepend = None):
@@ -34,45 +38,28 @@ class domObject(object):
 			if self.childObjects == None: # if the childObject is null then generate directly the string
 
 				prependStr = '' if (prepend == None) else (str(prepend) + '.')
-				value.append(str(prependStr) + domItem.attributes[self.propertyName].value.encode('utf-8') + ' = ' + self.formatXmlCharacter(domItem.firstChild.data.encode('utf-8')) + '\n')
-					
+				value.append(self.line(prependStr, domItem))
 
-			else: # else generate recursivly with the child domObject and prepend the parent property value
+			else: # otherwise generate recursivly with the child domObject and prepend the parent property value
 
 				parentName = None if (self.propertyName == None) else domItem.attributes[self.propertyName].value.encode('utf-8')
 
 				for childObject in self.childObjects:
 					value.extend(childObject(domItem).generateLines(parentName))
-
-				
 			
 		return value
 
 
-	@staticmethod
-	def formatXmlCharacter(value):
-		""" given the input string, this STATIC method will convert the string according to the regex, the position of the match and replace by `{position}` and return the converted string.
+
+
+
+	def line(self, prepend, dom):
+		""" generate the property file line string given the prepend and dom
 		=====================
-		@param: value(string): string to convert
-		@return: string : converted string
+		@param:
+			- prepend(string): optional string to prepend the property name
+			- dom : XML dom object
+		@return: [string] : return string format : `property = value
 		====================="""
 
-		import re
-
-		try:
-
-			output = value
-			matchs = re.findall(domObject.regexPattern, value) # find all matches of the regex within the input string
-			
-
-			index=0 # init the position to 0
-
-			for match in matchs: #iterate for matches of the input string
-				output = output.replace(match, '{'+str(index)+'}') # replace the current match with `{position}`
-				index += 1 # increase the position by 1
-
-			return output # return the converted value
-			
-		except Exception, e: #if we catch an exception during the formating method, return the initial string value
-
-			return value
+		return str(prepend) + dom.attributes[self.propertyName].value.encode('utf-8') + ' = ' + dom.firstChild.data.encode('utf-8') + '\n'

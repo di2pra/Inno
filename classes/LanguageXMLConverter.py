@@ -1,6 +1,8 @@
 class LanguageXMLConverter:
 	"""A Simple Language Converter class: give an array of xml language files path, it will generate a single language property file"""
 
+	""" Static parameters """
+	regexPattern = '([%][0-9]+[$]\w)' # regex pattern to replace property value in the output file
 
 	def __init__(self, schema, inputFilesPath = None):
 		""" LanguageXMLConvert Class Initiator
@@ -48,12 +50,10 @@ class LanguageXMLConverter:
 
 				xmldoc = minidom.parse(inputFile) #parse the XML input file given the path
 
-				lines = []
-
-				lines.extend(self.schema(xmldoc).generateLines())
+				lines = self.schema(xmldoc).generateLines()
 
 				for line in lines:
-					outputFile.write(line)
+					outputFile.write(self.formatXmlCharacter(line))
 			
 			outputFile.close() # close the generated file
 
@@ -65,3 +65,33 @@ class LanguageXMLConverter:
 			print "Unable to generate the output file. Error info: UnicodeDecodeError - {0}".format(e)
 		except Exception as e:
 			print "Unable to generate the output file. Error info: Undefined error - {0}".format(e)
+
+
+
+	@staticmethod
+	def formatXmlCharacter(value):
+		""" given the input string, this STATIC method will convert the string according to the regex, the position of the match and replace by `{position}` and return the converted string.
+		=====================
+		@param: value(string): string to convert
+		@return: string : converted string
+		====================="""
+
+		import re
+
+		try:
+
+			output = value
+			matchs = re.findall(LanguageXMLConverter.regexPattern, value) # find all matches of the regex within the input string
+			
+
+			index=0 # init the position to 0
+
+			for match in matchs: #iterate for matches of the input string
+				output = output.replace(match, '{'+str(index)+'}') # replace the current match with `{position}`
+				index += 1 # increase the position by 1
+
+			return output # return the converted value
+			
+		except Exception, e: #if we catch an exception during the formating method, return the initial string value
+
+			return value
