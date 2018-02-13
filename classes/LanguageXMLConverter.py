@@ -2,15 +2,15 @@ class LanguageXMLConverter:
 	"""A Simple Language Converter class: give an array of xml language files path, it will generate a single language property file"""
 
 
-	def __init__(self, domObjects, inputFilesPath = None):
+	def __init__(self, schema, inputFilesPath = None):
 		""" LanguageXMLConvert Class Initiator
 		=====================
 		@param:
-			domObjects: array of domObject
+			schema: required XML schema object (domObject)
 			inputFiles([string]): optional array of string of input XML file paths
 		@return: nothing
 		====================="""
-		self.domObjects = domObjects
+		self.schema = schema
 		self.inputFiles = [] if inputFilesPath is None else inputFilesPath # if the inputFilesPath is not defined, then set the array of file paths as empty
 
 
@@ -50,8 +50,7 @@ class LanguageXMLConverter:
 
 				lines = []
 
-				for domObject in self.domObjects:
-					lines.extend(domObject(xmldoc).generateLines()) # generate property lines for string element
+				lines.extend(self.schema(xmldoc).generateLines())
 
 				for line in lines:
 					outputFile.write(line)

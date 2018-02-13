@@ -3,5 +3,4 @@ from models.domObject import domObject
 
 class string(domObject):
 
-	childObject = None
 	propertyName = 'name'

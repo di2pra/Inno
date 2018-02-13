@@ -2,8 +2,11 @@ from xml.dom import minidom
 
 class domObject(object):
 
+	
 	""" Static parameters """
 	regexPattern = '([%][0-9]+[$]\w)' # regex pattern to replace in the output file
+	childObjects = None # define if the current object as child dom object by default None
+	propertyName = None # define the property name of the dom object to get the property value, by default None
 
 	def __init__(self, xml):
 		""" dom object class initiator
@@ -28,16 +31,20 @@ class domObject(object):
 
 		for domItem in dom: # for each dom item
 
-			if self.childObject == None: # if the childObject is null then generate directly the string
+			if self.childObjects == None: # if the childObject is null then generate directly the string
 
-				if prepend == None:
-					value.append(domItem.attributes[self.propertyName].value.encode('utf-8') + ' = ' + self.formatXmlCharacter(domItem.firstChild.data.encode('utf-8')) + '\n')
-				else:
-					value.append(str(prepend) + '.' + domItem.attributes[self.propertyName].value.encode('utf-8') + ' = ' + self.formatXmlCharacter(domItem.firstChild.data.encode('utf-8')) + '\n')
+				prependStr = '' if (prepend == None) else (str(prepend) + '.')
+				value.append(str(prependStr) + domItem.attributes[self.propertyName].value.encode('utf-8') + ' = ' + self.formatXmlCharacter(domItem.firstChild.data.encode('utf-8')) + '\n')
+					
 
 			else: # else generate recursivly with the child domObject and prepend the parent property value
-				parentName = domItem.attributes[self.propertyName].value.encode('utf-8')
-				value.extend(self.childObject(domItem).generateLines(parentName))
+
+				parentName = None if (self.propertyName == None) else domItem.attributes[self.propertyName].value.encode('utf-8')
+
+				for childObject in self.childObjects:
+					value.extend(childObject(domItem).generateLines(parentName))
+
+				
 			
 		return value
 

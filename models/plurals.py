@@ -4,5 +4,5 @@ from models.item import item
 
 class plurals(domObject):
 
-	childObject = item
+	childObjects = [item]
 	propertyName = 'name'
