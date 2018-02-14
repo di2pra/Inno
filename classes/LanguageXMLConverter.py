@@ -2,7 +2,7 @@ class LanguageXMLConverter:
 	"""A Simple Language Converter class: give an array of xml language files path, it will generate a single language property file"""
 
 	""" Static parameters """
-	regexPattern = '([%][0-9]+[$]\w)' # regex pattern to replace property value in the output file
+	regexPattern = '([%][0-9]+[$]\w)|(%d)' # regex pattern to replace property value in the output file
 
 	def __init__(self, schema, inputFilesPath = None):
 		""" LanguageXMLConvert Class Initiator
@@ -83,14 +83,16 @@ class LanguageXMLConverter:
 		try:
 
 			output = value
-			matchs = re.findall(LanguageXMLConverter.regexPattern, value) # find all matches of the regex within the input string
-			
+			matches = re.findall(LanguageXMLConverter.regexPattern, value) # find all matches of the regex within the input string		
 
 			index=0 # init the position to 0
 
-			for match in matchs: #iterate for matches of the input string
-				output = output.replace(match, '{'+str(index)+'}') # replace the current match with `{position}`
-				index += 1 # increase the position by 1
+			for match in matches: #iterate for matches of the input string
+				for subMatch in match:
+					if subMatch is not '':
+						output = output.replace(subMatch, '{'+str(index)+'}')
+						index += 1
+				
 
 			return output # return the converted value
 			
@@ -109,7 +111,26 @@ class LanguageXMLConverter:
 		@param:
 			- property(string): string of the property name
 			- value(string): string of the property value
-		@return: [string] : return string format : `property = value`
+		@return: (string) : return string format : `property = value`
 		====================="""
 
 		return property + ' = ' + LanguageXMLConverter.formatXmlCharacter(value) + '\n'
+
+
+
+	@staticmethod
+	def getFileNameFromPath(path):
+		""" given the file path, this method will return the file name without the extension
+		=====================
+		@param:
+			- path(string): full path of the file
+		@return: (string) : filename
+		====================="""
+		import ntpath #file path module
+
+		return ntpath.basename(path).split('.')[0] # getting the filename without the extension from the fullpath
+
+
+
+
+
