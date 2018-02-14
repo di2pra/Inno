@@ -48,9 +48,10 @@ class LanguageXMLConverter:
 		
 			for inputFile in self.inputFiles: # iterate for each input file paths
 
+				fileName = LanguageXMLConverter.getFileNameFromPath(inputFile) # get the file name
 				xmldoc = minidom.parse(inputFile) #parse the XML input file given the path
 
-				values = self.schema(xmldoc).generateValues()
+				values = self.schema(xmldoc).generateValues(fileName) # add the fileName as the prepend for property names in order to distinguish same property name within different input files
 
 				for value in values:
 					outputFile.write(LanguageXMLConverter.lineString(value[0], value[1]))

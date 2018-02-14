@@ -44,7 +44,15 @@ class domObject(object):
 
 				parentName = None if (self.propertyName == None) else domItem.attributes[self.propertyName].value.encode('utf-8')
 
+				if parentName == None: # if parentName is None then prependStr is equel to prepend value
+
+					prependStr = None if (prepend == None) else prepend
+
+				else: # else append the parentName to the prepend Value
+
+					prependStr = parentName if (prepend == None) else (str(prepend) + '.' + parentName)
+
 				for childObject in self.childObjects:
-					value.extend(childObject(domItem).generateValues(parentName))
+					value.extend(childObject(domItem).generateValues(prependStr)) # recursively call the method to process sub nodes
 			
 		return value
